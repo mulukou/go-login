@@ -1,10 +1,13 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -47,6 +50,12 @@ func login(c echo.Context) error {
 }
 
 func main() {
+	// Load .env
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -70,5 +79,5 @@ func main() {
 		return c.JSON(http.StatusOK, "You're Authenticated")
 	})
 
-	e.Logger.Fatal(e.Start(":1324"))
+	e.Logger.Fatal(e.Start(os.Getenv("SERVER_PORT")))
 }
